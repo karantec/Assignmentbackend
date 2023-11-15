@@ -1,28 +1,36 @@
-import express from "express";
-import mongoose from "mongoose";
-import bodyParser from "body-parser"
-import dotenv from "dotenv";
-import cors from "cors";
-import route from "./routes/userRoute.js";
+// api.js
+const cors = require('cors'); 
+const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
+const port = 3001;
+
 app.use(bodyParser.json());
 app.use(cors());
-dotenv.config();
 
+// Dummy database (in-memory)
+const users = [];
 
-const PORT = process.env.PORT || 7000;
-const URL = process.env.MONGOURL;
+// Dummy endpoint to create an account
+app.post('/api/create-account', (req, res) => {
+  const { username, password } = req.body;
 
-mongoose.connect(URL).then(()=>{
+  // Dummy validation (you can add your validation logic here)
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required.' });
+  }
 
-    console.log("DB connected successfully");
+  // Dummy logic to create an account
+  const newUser = { id: users.length + 1, username, password };
+  users.push(newUser);
 
-    app.listen(PORT, ()=>{
-        console.log(`Server is running on port: ${PORT}`);
-    })
+  // Simulate a delay (you can remove this in a real backend)
+  setTimeout(() => {
+    res.status(201).json(newUser);
+  }, 1000);
+});
 
-}).catch(error => console.log(error));
-
-
-app.use("/api", route);
+app.listen(port, () => {
+  console.log(`Dummy API listening at http://localhost:${port}`);
+});
